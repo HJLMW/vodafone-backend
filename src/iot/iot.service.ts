@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { IoT, IoTInput } from './dto/iot.dto';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class IoTService {
@@ -10,7 +11,7 @@ export class IoTService {
 	}
 
 	createDevice(input: IoTInput): IoT {
-		const newDevice = { ...input, id: crypto.randomUUID() } as IoT;
+		const newDevice = { ...input, id: uuidv4() } as IoT;
 		this.devices.push(newDevice);
 
 		return newDevice;
