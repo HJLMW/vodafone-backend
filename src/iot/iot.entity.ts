@@ -17,7 +17,7 @@ export class IoT {
 	@Column('json')
 	coordinates: { lat: number; lng: number };
 
-	@Column()
+	@Column('bigint')
 	lastConnection: number;
 
 	@Column()
