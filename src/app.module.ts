@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import { IotModule } from './iot/iot.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { IoT } from './iot/iot.entity';
+import { IotModule } from './iot/iot.module';
 
 @Module({
 	imports: [
@@ -10,8 +11,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 			driver: ApolloDriver,
 			autoSchemaFile: true,
 			sortSchema: true,
-			playground: true, // Let create querys in the browser (dev porpuses only)
-			
+			playground: true,
 		}),
 		IotModule,
 		TypeOrmModule.forRoot({
@@ -19,7 +19,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 			url: process.env.DATABASE_URL,
 			autoLoadEntities: true,
 			synchronize: true,
-		})
+		}),
+		TypeOrmModule.forFeature([IoT]),
 	],
 })
 export class AppModule { }

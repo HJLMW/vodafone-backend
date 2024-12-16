@@ -1,37 +1,44 @@
 import { Injectable } from '@nestjs/common';
-import { IoT, IoTInput } from './dto/iot.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { IoT } from './iot.entity';
+import { IoTInput } from './dto/iot.dto';
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class IoTService {
-	private devices: IoT[] = [];
+	constructor(
+		@InjectRepository(IoT)
+		private readonly deviceRepository: Repository<IoT>,
+	) { }
 
-	getAllDevices(): IoT[] {
-		return this.devices;
+	async getAllDevices(): Promise<IoT[]> {
+		return this.deviceRepository.find();
 	}
 
-	createDevice(input: IoTInput): IoT {
-		const newDevice = { ...input, id: uuidv4() } as IoT;
-		this.devices.push(newDevice);
+	async createDevice(input: IoTInput): Promise<IoT> {
+		const newDevice = this.deviceRepository.create({
+			...input,
+			id: uuidv4(),
+		});
 
-		return newDevice;
+		return this.deviceRepository.save(newDevice);
 	}
 
-	updateDevice(id: string, input: IoTInput): IoT {
-		const deviceIndex = this.devices.findIndex((device) => device.id === id);
-		if (deviceIndex === -1) throw new Error('Device not found');
+	async updateDevice(id: string, input: IoTInput): Promise<IoT> {
+		const device = await this.deviceRepository.findOne({ where: { id } });
+		if (!device) throw new Error('Device not found');
 
-		if(input.id) delete input.id;
-
-		this.devices[deviceIndex] = { ...this.devices[deviceIndex], ...input };
-
-		return this.devices[deviceIndex];
+		// Actualiza los campos del dispositivo
+		Object.assign(device, input);
+		return this.deviceRepository.save(device);
 	}
 
-	deleteDevice(id: string): boolean {
-		const deviceIndex = this.devices.findIndex((device) => device.id === id);
-		if (deviceIndex === -1) throw new Error('Device not found');
-		this.devices.splice(deviceIndex, 1);
+	async deleteDevice(id: string): Promise<boolean> {
+		const device = await this.deviceRepository.findOne({ where: { id } });
+		if (!device) throw new Error('Device not found');
+
+		await this.deviceRepository.remove(device);
 		return true;
 	}
 }
