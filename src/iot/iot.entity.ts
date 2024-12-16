@@ -20,6 +20,6 @@ export class IoT {
 	@Column('bigint')
 	lastConnection: number;
 
-	@Column()
+	@Column('bigint')
 	mobileNumber: number;
 }
