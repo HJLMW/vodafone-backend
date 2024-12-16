@@ -2,6 +2,10 @@
 
 This is a NestJS-based server that allows you to manage IoT devices. It uses PostgreSQL as the database hosted on Railway and GraphQL to facilitate queries for creating, editing, and deleting IoT devices. This API was created as part of a technical test for Vodafone.
 
+The database can be tested via GraphQL and is hosted at:
+[https://vodafone-backend-production.up.railway.app/graphql](https://vodafone-backend-production.up.railway.app/graphql)
+
+
 ## Features
 
 - **GraphQL API**: Provides flexible and efficient querying and mutation operations for IoT devices.
